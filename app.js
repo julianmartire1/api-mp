@@ -12,6 +12,9 @@ const pool = new Pool({
   database: process.env.BD_DATABASE,
   password: process.env.BD_PASSWORD,
   port: process.env.BD_PORT,
+  ssl: {
+    rejectUnauthorized: true,
+  },
 });
 
 app.use(express.static("public"));
