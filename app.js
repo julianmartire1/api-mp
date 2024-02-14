@@ -14,26 +14,30 @@ const pool = new Pool({
   port: process.env.BD_PORT,
 });
 
+app.use(express.static("public"));
+
+app.get("*", (req, res) => {
+  res.redirect("/");
+});
+
 app.post("/webhook", async (req, res) => {
   const payment = req.body;
 
-  if (payment.action === "payment.created") {
-    try {
-      // Insertar el JSON completo del pago en la base de datos
-      const insertQuery = `
+  try {
+    // Insertar el JSON completo del pago en la base de datos
+    const insertQuery = `
           INSERT INTO payments (payment_json)
           VALUES ($1)
         `;
-      const insertValues = [payment];
-      await pool.query(insertQuery, insertValues);
+    const insertValues = [payment];
+    await pool.query(insertQuery, insertValues);
 
-      console.log("¡Pago recibido y guardado en la base de datos!");
-      console.log(payment);
-    } catch (error) {
-      console.error("Error al insertar el pago en la base de datos:", error);
-      res.status(500).json({ error: "Error interno del servidor" });
-      return;
-    }
+    console.log("¡Pago recibido y guardado en la base de datos!");
+    console.log(payment);
+  } catch (error) {
+    console.error("Error al insertar el pago en la base de datos:", error);
+    res.status(500).json({ error: "Error interno del servidor" });
+    return;
   }
 
   res.status(200).end();
@@ -42,9 +46,3 @@ app.post("/webhook", async (req, res) => {
 app.listen(port, () => {
   console.log(`App listening on port ${port}`);
 });
-
-/* app.use(express.static("public"));
-
-app.get("*", (req, res) => {
-  res.redirect("/");
-}); */
