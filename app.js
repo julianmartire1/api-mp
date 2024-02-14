@@ -7,11 +7,11 @@ const port = process.env.PORT ?? 3000;
 app.use(bodyParser.json());
 
 const pool = new Pool({
-  user: process.env.USER,
-  host: process.env.HOST,
-  database: process.env.DATABASE,
-  password: process.env.PASSWORD,
-  port: process.env.PORT,
+  user: process.env.BD_USER,
+  host: process.env.BD_HOST,
+  database: process.env.BD_DATABASE,
+  password: process.env.BD_PASSWORD,
+  port: process.env.BD_PORT,
 });
 
 app.post("/webhook", async (req, res) => {
